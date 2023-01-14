@@ -40,6 +40,9 @@ def main():
     #Load the dataset
     dataset = TrafficDataset(config, W)
 
+    # Or load from a saved checkpoint
+    # model = 
+
 
 if __name__ == '__main__':
     main()
