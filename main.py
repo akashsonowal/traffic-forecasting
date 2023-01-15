@@ -39,9 +39,24 @@ def main():
     W = distance_to_weight(distances, gat_version=config['USE_GAT_WEIGHTS'])
     #Load the dataset
     dataset = TrafficDataset(config, W)
-
-    # Or load from a saved checkpoint
-    # model = 
+    
+    # total of 44 days in the dataset, use 34 for training, 5 for val, 5 for test
+    train, val, test = get_splits(dataset, config['N_SLOT'], (34, 5, 5))
+    train_dataloader = DataLoader(train, batch_size=config['BATCH_SIZE'], shuffle=True)
+    val_dataloader = DataLoader(val, batch_size=config['BATCH_SIZE'], shuffle=True)
+    test_dataloader = DataLoader(test, batch_size=config['BATCH_SIZE'], shuffle=False)
+    
+    # Get gpu if you can
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(f'Using {device}')
+    
+    # Configure and train model
+    config['N_NODE'] = dataset.n_node
+    model = model_train(train_dataloader, val_dataloader, config, device)
+    # Or, load from a saved checkpoint
+    # model = load_from_checkpoint('./runs/model_final_60epochs.pt', config)
+    # Test model
+    model_test(model, test_dataloader, device, config)
 
 
 if __name__ == '__main__':
