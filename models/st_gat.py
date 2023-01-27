@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GATConv
+
 class ST_GAT(torch.nn.Module):
   """
   Spatio-Temporal Graph Attention Network as presented in https://ieeexplore.ieee.org/document/8903252
@@ -45,20 +46,23 @@ class ST_GAT(torch.nn.Module):
     self.linear = torch.nn.Linear(lstm2_hidden_size, self.n_nodes*self.n_pred)
     torch.nn.xavier_uniform_(self.linear.weight)
     
- def forward(self, data, device):
-  """
-  Forward pass of the ST-GAT model
-  :param data Data to make a pass on
-  :param device Device to operate on
-  """
-  x, edge_index = data.x, data.edge_index
-  # apply dropout
-  if device == "cpu":
-    x = torch.FloatTensor(x)
-  else:
-    x = torch.cuda.FloatTensor(x)
+  def forward(self, data, device):
+    """
+    Forward pass of the ST-GAT model
+    :param data Data to make a pass on
+    :param device Device to operate on
+    """
+    x, edge_index = data.x, data.edge_index
+    if device == "cpu":
+      x = torch.FloatTensor(x)
+    else:
+      x = torch.cuda.FloatTensor(x)
   
-  # gat layer: output of gat: [11400, 12]
-  x = self.gat(x, edge_index)
+    # gat layer: output of gat: [11400, 12]
+    x = self.gat(x, edge_index)
+    # apply dropout
+    x = F.dropout(x, self.dropout, training=self.training)
+
+    return x
       
     
