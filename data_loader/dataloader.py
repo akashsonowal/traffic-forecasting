@@ -51,7 +51,7 @@ class TrafficDataset(InMemoryDataset):
     def process(self):
         """
         Process the raw datasets into saved .pt dataset for later use.
-        Note that any self.fiels won't exist if loading straight from .pt file
+        Note that any self.fields won't exist if loading straight from .pt file
         """
         #Data preprocessing and loading
         data = pd.read_csv(self.raw_file_names[0], header=None).values
