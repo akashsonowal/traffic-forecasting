@@ -45,7 +45,7 @@ class TrafficDataset(InMemoryDataset):
     def processed_file_names(self):
         return ['./data.pt']
     
-    def download(self):
+    def download(self): #velocity dataset
         copyfile('./dataset/PeMSD7_V_228.csv', os.path.join(self.raw_dir, 'PeMSD7_V_228.csv'))
     
     def process(self):
@@ -54,18 +54,18 @@ class TrafficDataset(InMemoryDataset):
         Note that any self.fields won't exist if loading straight from .pt file
         """
         #Data preprocessing and loading
-        data = pd.read_csv(self.raw_file_names[0], header=None).values
+        data = pd.read_csv(self.raw_file_names[0], header=None).values 
         #Technically using the validation and test datasets here, but it is fine, would normally
         #get the mean and std_dev from a large dataset
         mean = np.mean(data)
         std_dev = np.std(data)
         data = z_score(data, np.mean(data), np.std(data))
 
-        _, n_node = data.shape
-        n_window = self.config['N_PRED'] + self.config['N_HIST']
+        _, n_node = data.shape #(12672, 228)
+        n_window = self.config['N_PRED'] + self.config['N_HIST'] #window size = 9 + 12 = 21
 
-        #manipulate n x n matrix into 2 x num_edges
-        edge_index = torch.zeros((2, n_node**2), dtype=torch.long)
+        #manipulate n x n matrix into 2 x num_edges 
+        edge_index = torch.zeros((2, n_node**2), dtype=torch.long) #COO format
         # create an edge_attr matrix with our weights (num_edges x 1) --> our edge features are dim 1
         edge_attr = torch.zeros((n_node**2, 1))
         num_edges = 0
@@ -76,14 +76,14 @@ class TrafficDataset(InMemoryDataset):
                     edge_index[1, num_edges] = j 
                     edge_attr[num_edges] = self.W[i, j]
                     num_edges += 1
-        #using resize_ to just keep the first num_edges entries
+        #using resize_ to just keep the first num_edges entries (where W is non zero)
         edge_index = edge_index.resize_(2, num_edges)
         edge_attr = edge_attr.resize_(num_edges, 1)
 
         sequences = []
         # T x F x N
-        for i in range(self.config['N_DAYS']):
-            for j in range(self.config['N_SLOT']):
+        for i in range(self.config['N_DAYS']): #44 days
+            for j in range(self.config['N_SLOT']): #No. of windows in a day
                 # for each time point construct a different graph with data object
                 # Docs here: https://pytorch-geometric.readthedocs.io/en/latest/modules/data.html#torch_geometric.data.Data
                 g = Data()
@@ -92,17 +92,22 @@ class TrafficDataset(InMemoryDataset):
                 g.edge_index = edge_index
                 g.edge_attr = edge_attr 
 
+                sta = i * self.config['N_DAY_SLOT'] + j 
+                end = sta + n_window #n_window is window size
                 # (F, N) switched to (N, F)
-                sta = i * self.config['N_DAY_SLOT'] + j
-                end = sta + n_window 
-                # [21, 228]
-                full_window = np.swapaxes(data[sta: end, :], 0, 1)
-                g.x = torch.FloatTensor(full_window[:, 0:self.config['N_HIST']])
-                g.y = torch.FloatTensor(full_window[:, self.config['N_HIST']::])
+                # [21, 228] -> [228, 21]
+                full_window = np.swapaxes(data[sta: end, :], 0, 1) #rrows becomes cols and vice versa
+                g.x = torch.FloatTensor(full_window[:, 0:self.config['N_HIST']]) #(228, 12)
+                g.y = torch.FloatTensor(full_window[:, self.config['N_HIST']::]) # (228, 9)
                 sequences += [g]
         
         # make the actual dataset
-        data, slices = self.collate(sequences)
+        data, slices = self.collate(sequences) #concatenate graph data objects
+        # slices is a list of number of nodes of each graph. For our case it is [228, 228, ...44 x N_SLOT]
+        # data is tuple of (x,  edge_index, edge_attr) where 
+        # x is the concatenation of node feature tensors of both the graphs along the first dimension of shape
+        # edge_index is the concatenation of edge index tensors of both the graphs along the last dimension of shape
+        # edge_attr is the concatenation of edge attribute tensors of both the graphs along the first dimension of shape
         torch.save((data, slices, n_node, mean, std_dev), self.processed_paths[0])
 
 def get_splits(dataset: TrafficDataset, n_slot, splits):

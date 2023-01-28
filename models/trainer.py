@@ -13,3 +13,9 @@ from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter()
 
 
+def model_train():
+    pass
+
+def model_test():
+    pass
+

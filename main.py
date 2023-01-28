@@ -46,7 +46,7 @@ def main():
     test_dataloader = DataLoader(test, batch_size=config['BATCH_SIZE'], shuffle=False)
     
     # Get gpu if you can
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = 'gpu' if torch.cuda.is_available() else 'cpu'
     print(f'Using {device}')
     
     # Configure and train model
@@ -56,7 +56,6 @@ def main():
     # model = load_from_checkpoint('./runs/model_final_60epochs.pt', config)
     # Test model
     model_test(model, test_dataloader, device, config)
-
 
 if __name__ == '__main__':
     main()
