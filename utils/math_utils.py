@@ -20,4 +20,30 @@ def un_z_score(x_normed, mean, std):
     :param std: float, the value of standard deviation
     """
     return x_normed * std + mean 
-    
+
+def RMSE(v, v_):
+    """
+    Mean squared error.
+    :param v: torch array, ground truth
+    :param v_: torch array, prediction
+    :return: torch scaler, RMSE averages on all elements of input
+    """
+    return torch.sqrt(torch.mean(v_ - v)**2)
+
+def MAE(v, v_):
+    """
+    Mean Absolute Error
+    :param v: torch array, ground truth.
+    :param v_: torch array, prediction.
+    :return: torch scalar, MAE averages on all elements of input.
+    """
+    return torch.mean(torch.abs(v_ - v))
+
+def MAPE(v, v_):
+    """
+    Mean absolute percentage error, given as a % (e.g. 99 -> 99%)
+    :param v: torch array, ground truth.
+    :param v_: torch array, prediction.
+    :return: torch scalar, MAPE averages on all elements of input.
+    """
+    return torch.mean(torch.abs(v_ - v)/(v + 1e-15) * 100)
