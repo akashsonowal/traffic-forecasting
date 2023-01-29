@@ -58,11 +58,38 @@ class ST_GAT(torch.nn.Module):
     else:
       x = torch.cuda.FloatTensor(x)
   
-    # gat layer: output of gat: [11400, 12]
+    # gat layer: output of gat: [11400, 12] where 50 x 228 = 11400
     x = self.gat(x, edge_index)
     # apply dropout
     x = F.dropout(x, self.dropout, training=self.training)
 
+    #RNN: 2 LSTMs
+    # [batchsize*num_nodes, seq_length] -> [batchsize, num_nodes, seq_length]
+    batch_size = data.num_graphs #50
+    n_node = data.num_nodes / batch_size #11400 / 50 = 228
+    x = torch.reshape(x, (batch_size, n_node, data.num_features)) #(50, 228, 12)
+
+    # for lstm: x should be (seq_length, batch_size, n_nodes) 
+    # sequence_length: 12, batch_size: 50, n_nodes: 228
+    x = torch.modedim(x, 2, 0) #(12, 228, 50)
+    x = torch.movedim(x, 2, 1) #(12, 50, 228)
+    # [12, 50, 228] -> [12, 50, 32]
+    x, _ = self.lstm1(x)
+    # [12, 50, 32] -> [12, 50, 128]
+    x, _ = self.lstm2(x)
+
+    # Output contains h_t for each time_step, only the last one has all inputs accounted for
+    # [12, 50, 128] -> [50, 128]
+    x = torch.squeeze(x[-1, :, :])
+    # [50, 128] -> [50, 228*9]
+    x = self.linear(x)
+
+    # Now reshape into final output
+    s = x.shape
+    # [50, 228*9] -> [50, 228, 9]
+    x = torch.reshape(x, (s[0], self.n_nodes, self.n_pred))
+    # [50, 228, 9] -> [11400, 9]
+    x = torch.reshape(x, (s[0]*self.n_nodes, self.n_pred))
     return x
       
     
