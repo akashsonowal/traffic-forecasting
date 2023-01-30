@@ -99,8 +99,72 @@ def model_train(train_dataloader, val_dataloader, config, device):
         print(f'Loss: {loss:.3f}')
         if epoch % 5 == 0:
             train_mae, train_rmse, train_mape, _, _ = eval(model, device, train_dataloader, 'Train')
+            val_mae, val_rmse, val_mape, _, _ = eval(model, device, val_dataloader, 'Valid')
+            writer.add_scaler(f'MAE/train', train_mae, epoch)
+            writer.add_scaler(f'RMSE/train', train_rmse, epoch)
+            writer.add_scaler(f'MAPE/train', train_mape, epoch)
+            writer.add_scaler(f'MAE/val', val_mae, epoch)
+            writer.add_scaler(f'RMSE/val', val_rmse, epoch)
+            writer.add_scaler(f'MAPE/val', val_mape, epoch) 
 
+    writer.flush()
+    # Save the model
+    timestr = time.strftime("%m-%d-%H%M%S")
+    torch.save({
+        "epoch": epoch, 
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(),
+        "loss": loss,
+        }, os.path.join(config['CHECKPOINT_DIR'],f'model_{timestr}.pt'))  
+    return model      
 
-def model_test():
-    pass
+def model_test(model, test_dataloader, device, config):
+    """
+    Test the ST-GAT model
+    :param test_dataloader Data loader of test dataset
+    :param device Device to evaluate on
+    """
+    _, _, _, y_pred, y_truth = eval(model, device, test_dataloader, 'Test')
+    plot_predictions(test_dataloader, y_pred, y_test, 0, config)
+
+def plot_predictions(test_dataloader, y_pred, y_truth, node, config):
+    # Calculate the truth
+    s = y_truth.shape
+    y_truth = y_truth.reshape(s[0], config['BATCH_SIZE'], config['N_NODE'], s[-1])
+    # just get the first prediction out for the nth node
+    y_truth = y_truth[:, :, node, 0]
+    # Flatten to get the predictions for entire test dataset
+    y_truth = torch.flatten(y_truth)
+    day0_truth = y_truth[:config['N_SLOT']]
+
+    # Calculate the predicted
+    s = y_pred.shape
+    y_pred = y_pred.reshape(s[0], config['BATCH_SIZE'], config['N_NODE'], s[-1])
+    # just get the first prediction out for the nth node
+    y_pred = y_pred[:, :, node, 0]
+    # Flatten to get the predictions for entire test dataset
+    y_pred = torch.flatten(y_pred)
+    # Just grab the first day
+    day0_pred = y_pred[:config['N_SLOT']]
+
+    t = [t for t in range(0, config['N_SLOT'], 5, 5)]
+    plt.plot(t, day0_pred, label='ST-GAT')
+    plt.plot(t, day0_truth, label='truth')
+    plt.xlabel('Time (minutes)')
+    plt.ylabel('Speed prediction')
+    plt.title('Predictions of traffic over time')
+    plt.legend()
+    plt.savefig('predicted_times.png')
+    plt.show()
+
+def load_from_checkpoint(checkpoint, config):
+    """
+    Load a model from the checkpoint
+    :param checkpoint_path Path to checkpoint
+    :param config Configuration to load model with
+    """
+    model = STGAT(in_channels=config['N_HIST'], out_channels=config['N_PRED'], n_nodes=config['N_NODE'])
+    checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
+    model.load_state_dict(checkpoint['model_state_dict'])
+    return model
 
