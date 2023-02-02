@@ -88,7 +88,7 @@ def model_train(train_dataloader, val_dataloader, config, device):
     
     # Make the model. Each dataset in the graph is 228 x 12: N x F (N = #nodes, F = time window)
     model = STGAT(in_channels=config['N_HIST'], out_channels=config['N_PRED'], n_nodes=config['N_NODE'], dropout=config['DROPOUT'])
-    optimizer = optim.Adam(model_parameters(), lr=config['INITIAL_LR'], weight_decay=config['WEIGHT_DECAY'])
+    optimizer = optim.Adam(model.parameters(), lr=config['INITIAL_LR'], weight_decay=config['WEIGHT_DECAY'])
     loss_fn = torch.nn.MSELoss
 
     model.to(device)

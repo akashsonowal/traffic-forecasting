@@ -56,6 +56,6 @@ def main():
     # model = load_from_checkpoint('./runs/model_final_60epochs.pt', config)
     # Test model
     model_test(model, test_dataloader, device, config)
-
+ 
 if __name__ == '__main__':
     main()
