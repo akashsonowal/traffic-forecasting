@@ -1,11 +1,12 @@
+import os
 import torch
 import numpy as np
 import pandas as pd
-import os
-from torch_geometric.data import InMemoryDataset, Data
 from shutil import copyfile
 
-from utils.math_utils import *
+from torch_geometric.data import InMemoryDataset, Data
+
+from ..utils import *
 
 
 def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
@@ -36,7 +37,7 @@ class TrafficDataset(InMemoryDataset):
     Dataset for Graph Neural Networks.
     """
 
-    def __init__(self, config, W, root="", transform=None, pre_transform=None):
+    def __init__(self, config, W, root="data/raw/", transform=None, pre_transform=None):
         self.config = config
         self.W = W
         super().__init__(root, transform, pre_transform)
