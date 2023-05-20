@@ -6,7 +6,7 @@ from shutil import copyfile
 
 from torch_geometric.data import InMemoryDataset, Data
 
-from ..utils import *
+from ..utils import z_score
 
 
 def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
@@ -55,7 +55,7 @@ class TrafficDataset(InMemoryDataset):
 
     def download(self):  # velocity dataset
         copyfile(
-            "./dataset/PeMSD7_V_228.csv", os.path.join(self.raw_dir, "PeMSD7_V_228.csv")
+            "./data/raw/PeMSD7_V_228.csv", os.path.join(self.raw_dir, "PeMSD7_V_228.csv")
         )
 
     def process(self):
