@@ -14,7 +14,7 @@ def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
     Given distances between all nodes, convert into a weight matrix
     :param  W distances
     :param sigma2 user configurable parameter to adjust sparsity of matrix
-    :param epsilon user configurable paramter to adjust sparsity of matrix
+    :param epsilon user configurable parameter to adjust sparsity of matrix
     :param gat_version If true, use 0/1 weights with self loops. Otherwise use float
     """
     n = W.shape[0]
@@ -55,7 +55,8 @@ class TrafficDataset(InMemoryDataset):
 
     def download(self):  # velocity dataset
         copyfile(
-            "./data/raw/PeMSD7_V_228.csv", os.path.join(self.raw_dir, "PeMSD7_V_228.csv")
+            "./data/raw/PeMSD7_V_228.csv",
+            os.path.join(self.raw_dir, "PeMSD7_V_228.csv"),
         )
 
     def process(self):
@@ -110,7 +111,7 @@ class TrafficDataset(InMemoryDataset):
                 # [21, 228] -> [228, 21]
                 full_window = np.swapaxes(
                     data[sta:end, :], 0, 1
-                )  # rrows becomes cols and vice versa
+                )  # rows becomes cols and vice versa
                 g.x = torch.FloatTensor(
                     full_window[:, 0 : self.config["N_HIST"]]
                 )  # (228, 12)
