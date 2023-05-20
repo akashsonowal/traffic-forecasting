@@ -1,5 +1,6 @@
 import torch
 
+
 def z_score(x, mean, std):
     """
     Z-score normalization function: $Z = (X - \mu) / \sigma $
@@ -10,7 +11,8 @@ def z_score(x, mean, std):
     :param std: float, the value of standard deviation.
     :return: torch array, the z-score normalized array.
     """
-    return (x - mean)/std
+    return (x - mean) / std
+
 
 def un_z_score(x_normed, mean, std):
     """
@@ -19,7 +21,8 @@ def un_z_score(x_normed, mean, std):
     :param mean: float, the value of mean
     :param std: float, the value of standard deviation
     """
-    return x_normed * std + mean 
+    return x_normed * std + mean
+
 
 def RMSE(v, v_):
     """
@@ -28,7 +31,8 @@ def RMSE(v, v_):
     :param v_: torch array, prediction
     :return: torch scaler, RMSE averages on all elements of input
     """
-    return torch.sqrt(torch.mean(v_ - v)**2)
+    return torch.sqrt(torch.mean(v_ - v) ** 2)
+
 
 def MAE(v, v_):
     """
@@ -39,6 +43,7 @@ def MAE(v, v_):
     """
     return torch.mean(torch.abs(v_ - v))
 
+
 def MAPE(v, v_):
     """
     Mean absolute percentage error, given as a % (e.g. 99 -> 99%)
@@ -46,4 +51,4 @@ def MAPE(v, v_):
     :param v_: torch array, prediction.
     :return: torch scalar, MAPE averages on all elements of input.
     """
-    return torch.mean(torch.abs(v_ - v)/(v + 1e-15) * 100)
+    return torch.mean(torch.abs(v_ - v) / (v + 1e-15) * 100)
