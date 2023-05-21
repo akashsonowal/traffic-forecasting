@@ -5,7 +5,7 @@ import pandas as pd
 from torch_geometric.loader import DataLoader
 
 from traffic_forecasting.trainer import load_from_checkpoint, model_train, model_test
-from data_loader.dataloader import TrafficDataset, get_splits, distance_to_weight
+from traffic_forecasting.data import TrafficDataset, get_splits, distance_to_weight
 
 
 def main():
