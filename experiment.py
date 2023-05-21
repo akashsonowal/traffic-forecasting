@@ -2,9 +2,9 @@
 
 import torch
 import pandas as pd
-
-from traffic_forecasting.models.trainer import load_from_checkpoint, model_train, model_test
 from torch_geometric.loader import DataLoader
+
+from traffic_forecasting.trainer import load_from_checkpoint, model_train, model_test
 from data_loader.dataloader import TrafficDataset, get_splits, distance_to_weight
 
 
