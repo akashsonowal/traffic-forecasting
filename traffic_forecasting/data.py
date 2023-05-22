@@ -6,7 +6,7 @@ from shutil import copyfile
 import torch
 from torch_geometric.data import InMemoryDataset, Data
 
-from ..utils import z_score
+from .utils import z_score
 
 
 def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
