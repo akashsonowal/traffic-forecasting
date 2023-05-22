@@ -1,9 +1,9 @@
 import os
-import torch
 import numpy as np
 import pandas as pd
 from shutil import copyfile
 
+import torch
 from torch_geometric.data import InMemoryDataset, Data
 
 from ..utils import z_score
