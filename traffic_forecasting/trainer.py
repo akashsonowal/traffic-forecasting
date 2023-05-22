@@ -1,17 +1,17 @@
-import torch
-import torch.optim as optim
-from tqdm import tqdm
-import time
 import os
+import time
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-from models.st_gat import STGAT
-from utils.math_utils import *
+import torch
+import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
+
+from models import STGAT
+from utils.math_utils import *
 
 # Make a tensorboard writer
 writer = SummaryWriter()
-
 
 @torch.no_grad()
 def eval(model, device, dataloader, type=""):
