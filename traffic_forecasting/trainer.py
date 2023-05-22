@@ -8,7 +8,7 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
 from models import STGAT
-from utils.math_utils import *
+from utils import un_z_score, RMSE, MAE, MAPE
 
 # Make a tensorboard writer
 writer = SummaryWriter()
