@@ -4,7 +4,8 @@ import pandas as pd
 import torch
 from torch_geometric.loader import DataLoader
 
-from traffic_forecasting.data import distance_to_weight, TrafficDataset, get_splits
+from traffic_forecasting.data import TrafficDataset
+from traffic_forecasting.utils import distance_to_weight, get_splits
 from traffic_forecasting.trainer import model_train, load_from_checkpoint, model_test
 
 def main():
@@ -38,10 +39,8 @@ def main():
     print(f"Using {device}")
 
     # Configure and train model
-    config["N_NODE"] = dataset.n_node
     model = model_train(train_dataloader, val_dataloader, config, device)
-    # Or, load from a saved checkpoint
-    # model = load_from_checkpoint('./runs/model_final_60epochs.pt', config)
+    model = load_from_checkpoint('./runs/model_final_60epochs.pt', config)
     # Test model
     model_test(model, test_dataloader, device, config)
 
