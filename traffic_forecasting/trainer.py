@@ -75,7 +75,7 @@ def train_one_epoch(model, device, dataloader, optimizer, loss_fn, epoch):
         batch.to(device)
         y_pred = torch.squeeze(model(batch, device))
         loss = loss_fn()(y_pred.float(), torch.squeeze(batch.y).float())
-        writer.add_scaler("Loss/train", loss, epoch)
+        writer.add_scalar("Loss/train", loss, epoch)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -109,12 +109,12 @@ def model_train(model, train_dataloader, val_dataloader, config, device):
             val_mae, val_rmse, val_mape, _, _ = eval(
                 model, device, val_dataloader, "Valid"
             )
-            writer.add_scaler(f"MAE/train", train_mae, epoch)
-            writer.add_scaler(f"RMSE/train", train_rmse, epoch)
-            writer.add_scaler(f"MAPE/train", train_mape, epoch)
-            writer.add_scaler(f"MAE/val", val_mae, epoch)
-            writer.add_scaler(f"RMSE/val", val_rmse, epoch)
-            writer.add_scaler(f"MAPE/val", val_mape, epoch)
+            writer.add_scalar(f"MAE/train", train_mae, epoch)
+            writer.add_scalar(f"RMSE/train", train_rmse, epoch)
+            writer.add_scalar(f"MAPE/train", train_mape, epoch)
+            writer.add_scalar(f"MAE/val", val_mae, epoch)
+            writer.add_scalar(f"RMSE/val", val_rmse, epoch)
+            writer.add_scalar(f"MAPE/val", val_mape, epoch)
 
     writer.flush()
     # Save the model
