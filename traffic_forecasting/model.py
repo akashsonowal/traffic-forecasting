@@ -78,7 +78,7 @@ class ST_GAT(torch.nn.Module):
         # RNN: 2 LSTMs
         # [batchsize*num_nodes, seq_length] -> [batchsize, num_nodes, seq_length]
         batch_size = data.num_graphs  # 50
-        n_node = data.num_nodes / batch_size  # 11400 / 50 = 228
+        n_node = int(data.num_nodes / batch_size)  # 11400 / 50 = 228
         x = torch.reshape(x, (batch_size, n_node, data.num_features))  # (50, 228, 12)
 
         # for lstm: x should be (seq_length, batch_size, n_nodes)
