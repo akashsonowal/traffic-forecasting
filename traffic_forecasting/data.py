@@ -14,7 +14,7 @@ class TrafficDataset(InMemoryDataset):
     """
 
     def __init__(
-        self, config, W, root="../data/root/", transform=None, pre_transform=None
+        self, config, W, root="./data/root/", transform=None, pre_transform=None
     ):
         self.config = config
         self.W = W
@@ -29,11 +29,11 @@ class TrafficDataset(InMemoryDataset):
 
     @property
     def processed_file_names(self):
-        return ["../data/root/data.pt"]
+        return ["./data/root/data.pt"]
 
     def download(self):  # velocity dataset
         copyfile(
-            "../data/raw/PeMSD7_V_228.csv",
+            "./data/raw/PeMSD7_V_228.csv",
             os.path.join(self.raw_dir, "PeMSD7_V_228.csv"),
         )
 
