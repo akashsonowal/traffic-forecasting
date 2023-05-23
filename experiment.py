@@ -39,8 +39,8 @@ def main():
     print(f"Using {device}")
 
     # Configure and train model
-    model = model_train(train_dataloader, val_dataloader, config, device)
-    model = load_from_checkpoint('./runs/model_final_60epochs.pt', config)
+    model_train(train_dataloader, val_dataloader, config, device)
+    model = load_from_checkpoint('./runs/stgat_checkpoint.pt', config)
     # Test model
     model_test(model, test_dataloader, device, config)
 

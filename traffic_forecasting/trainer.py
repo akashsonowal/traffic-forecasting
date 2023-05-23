@@ -136,7 +136,6 @@ def model_train(train_dataloader, val_dataloader, config, device):
         },
         os.path.join(config["CHECKPOINT_DIR"], f"model_{timestr}.pt"),
     )
-    return model
 
 
 def model_test(model, test_dataloader, device, config):
