@@ -48,7 +48,7 @@ class ST_GAT(torch.nn.Module):
         self.lstm2 = torch.nn.LSTM(
             input_size=lstm1_hidden_size, hidden_size=lstm2_hidden_size, num_layers=1
         )
-        for name, param in self.lstm2.named_paramters():
+        for name, param in self.lstm2.named_parameters():
             if "bias" in name:
                 torch.nn.init_constant_(param, 0.0)
             elif "weight" in name:
