@@ -1,7 +1,9 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import torch
 
 from .data import TrafficDataset
+from .model import ST_GAT
 
 
 def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
@@ -95,3 +97,47 @@ def MAPE(v, v_):
     :return: torch scalar, MAPE averages on all elements of input.
     """
     return torch.mean(torch.abs(v_ - v) / (v + 1e-15) * 100)
+
+def load_from_checkpoint(checkpoint_path, config):
+    """
+    Load a model from the checkpoint
+    :param checkpoint_path Path to checkpoint
+    :param config Configuration to load model with
+    """
+    model = ST_GAT(
+        in_channels=config["N_HIST"],
+        out_channels=config["N_PRED"],
+        n_nodes=config["N_NODE"],
+    )
+    checkpoint = torch.load(checkpoint_path, map_location=torch.device("cpu"))
+    model.load_state_dict(checkpoint["model_state_dict"])
+    return model
+
+def plot_predictions(y_pred, y_truth, node, config):
+    s = y_truth.shape # 
+    y_truth = y_truth.reshape(s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1])
+    # just get the first prediction out for the nth node
+    y_truth = y_truth[:, :, node, 0]
+    # Flatten to get the predictions for entire test dataset
+    y_truth = torch.flatten(y_truth)
+    day0_truth = y_truth[: config["N_SLOT"]]
+
+    # Calculate the predicted
+    s = y_pred.shape
+    y_pred = y_pred.reshape(s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1])
+    # just get the first prediction out for the nth node
+    y_pred = y_pred[:, :, node, 0]
+    # Flatten to get the predictions for entire test dataset
+    y_pred = torch.flatten(y_pred)
+    # Just grab the first day
+    day0_pred = y_pred[: config["N_SLOT"]]
+
+    t = [t for t in range(0, config["N_SLOT"], 5, 5)]
+    plt.plot(t, day0_pred, label="ST-GAT")
+    plt.plot(t, day0_truth, label="truth")
+    plt.xlabel("Time (minutes)")
+    plt.ylabel("Speed prediction")
+    plt.title("Predictions of traffic over time")
+    plt.legend()
+    plt.savefig(f"../assets/traffic_on_node{node}_day0.png")
+    plt.show()

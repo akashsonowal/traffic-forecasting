@@ -6,6 +6,7 @@ from torch_geometric.loader import DataLoader
 
 from traffic_forecasting.data import TrafficDataset
 from traffic_forecasting.utils import distance_to_weight, get_splits
+from traffic_forecasting.model import ST_GAT
 from traffic_forecasting.trainer import model_train, load_from_checkpoint, model_test
 
 
@@ -43,11 +44,18 @@ def main():
     device = "gpu" if torch.cuda.is_available() else "cpu"
     print(f"Using {device}")
 
+    model = ST_GAT(
+        in_channels=config["N_HIST"],
+        out_channels=config["N_PRED"],
+        n_nodes=config["N_NODE"],
+        dropout=config["DROPOUT"],
+    )
+
     # Configure and train model
-    model_train(train_dataloader, val_dataloader, config, device)
+    model_train(model, train_dataloader, val_dataloader, config, device)
     model = load_from_checkpoint("./runs/stgat_checkpoint.pt", config)
     # Test model
-    model_test(model, test_dataloader, device, config)
+    model_test(model, test_dataloader, config, device)
 
 
 if __name__ == "__main__":
