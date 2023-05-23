@@ -48,7 +48,7 @@ def eval(model, device, dataloader, type=""):
                 pred, dataloader.dataset.mean(), dataloader.dataset.std_dev()
             )
             y_pred[i, : pred.shape[0], :] = pred
-            y_truth[i, : pred_shape[0], :] = truth
+            y_truth[i, : truth.shape[0], :] = truth
             rmse += RMSE(truth, pred)
             mae += MAE(truth, pred)
             mape += MAPE(truth, pred)
@@ -73,10 +73,10 @@ def train_one_epoch(model, device, dataloader, optimizer, loss_fn, epoch):
     model.train()
     for _, batch in enumerate(tqdm(dataloader, desc=f"Epochs {epoch}")):
         batch.to(device)
-        optimizer.zero_grad()
         y_pred = torch.squeeze(model(batch, device))
         loss = loss_fn()(y_pred.float(), torch.squeeze(batch.y).float())
         writer.add_scaler("Loss/train", loss, epoch)
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
     return loss
