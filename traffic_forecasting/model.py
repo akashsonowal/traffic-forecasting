@@ -44,7 +44,7 @@ class ST_GAT(torch.nn.Module):
             if "bias" in name:
                 torch.nn.init.constant_(param, 0.0)
             elif "weight" in name:
-                torch.nn.init.kaiming_uniform_(param)
+                torch.nn.init.xavier_uniform_(param)
         self.lstm2 = torch.nn.LSTM(
             input_size=lstm1_hidden_size, hidden_size=lstm2_hidden_size, num_layers=1
         )
@@ -52,7 +52,7 @@ class ST_GAT(torch.nn.Module):
             if "bias" in name:
                 torch.nn.init.constant_(param, 0.0)
             elif "weight" in name:
-                torch.nn.init.kaiming_uniform_(param)
+                torch.nn.init.xavier_uniform_(param)
 
         # fully connected neural network
         self.linear = torch.nn.Linear(lstm2_hidden_size, self.n_nodes * self.n_pred)
