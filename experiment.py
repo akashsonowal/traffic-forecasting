@@ -8,6 +8,7 @@ from traffic_forecasting.data import TrafficDataset
 from traffic_forecasting.utils import distance_to_weight, get_splits
 from traffic_forecasting.trainer import model_train, load_from_checkpoint, model_test
 
+
 def main():
     config = {
         "BATCH_SIZE": 50,
@@ -19,12 +20,16 @@ def main():
         "N_HIST": 12,
         "DROPOUT": 0.2,
         "N_DAY_SLOT": 288,  # (24 * 60)/5 number of possible 5 mins measurements per day
-        "N_DAYS": 44, # number of days worth of data in the dataset
-        "USE_GAT_WEIGHTS": True, # If True, use GAT weight matrix, else GCN weight matrix
+        "N_DAYS": 44,  # number of days worth of data in the dataset
+        "USE_GAT_WEIGHTS": True,  # If True, use GAT weight matrix, else GCN weight matrix
         "N_NODE": 228,
     }
-    config["N_SLOT"] = config["N_DAY_SLOT"] - (config["N_PRED"] + config["N_HIST"]) + 1 # number of possible windows in a day
-    distances = pd.read_csv("./data/raw/PeMSD7_W_228.csv", header=None).values # (228, 228)
+    config["N_SLOT"] = (
+        config["N_DAY_SLOT"] - (config["N_PRED"] + config["N_HIST"]) + 1
+    )  # number of possible windows in a day
+    distances = pd.read_csv(
+        "./data/raw/PeMSD7_W_228.csv", header=None
+    ).values  # (228, 228)
     W = distance_to_weight(distances, gat_version=config["USE_GAT_WEIGHTS"])
     dataset = TrafficDataset(config, W)
 
@@ -40,7 +45,7 @@ def main():
 
     # Configure and train model
     model_train(train_dataloader, val_dataloader, config, device)
-    model = load_from_checkpoint('./runs/stgat_checkpoint.pt', config)
+    model = load_from_checkpoint("./runs/stgat_checkpoint.pt", config)
     # Test model
     model_test(model, test_dataloader, device, config)
 

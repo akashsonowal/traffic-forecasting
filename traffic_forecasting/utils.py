@@ -1,4 +1,8 @@
+import numpy as np
 import torch
+
+from .data import TrafficDataset
+
 
 def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
     """
@@ -22,6 +26,7 @@ def distance_to_weight(W, sigma2=0.1, epsilon=0.5, gat_version=False):
 
     return W
 
+
 def get_splits(dataset: TrafficDataset, n_slot, splits):
     """
     Given the data, split it into random subsets of train, val and test as given by splits
@@ -38,6 +43,7 @@ def get_splits(dataset: TrafficDataset, n_slot, splits):
 
     return train, val, test
 
+
 def z_score(x, mean, std):
     """
     Z-score normalization function: $Z = (X - \mu) / \sigma $
@@ -50,6 +56,7 @@ def z_score(x, mean, std):
     """
     return (x - mean) / std
 
+
 def un_z_score(x_normed, mean, std):
     """
     Undo the z-score calculation
@@ -58,6 +65,7 @@ def un_z_score(x_normed, mean, std):
     :param std: float, the value of standard deviation
     """
     return x_normed * std + mean
+
 
 def RMSE(v, v_):
     """
@@ -68,6 +76,7 @@ def RMSE(v, v_):
     """
     return torch.sqrt(torch.mean(v_ - v) ** 2)
 
+
 def MAE(v, v_):
     """
     Mean Absolute Error
@@ -76,6 +85,7 @@ def MAE(v, v_):
     :return: torch scalar, MAE averages on all elements of input.
     """
     return torch.mean(torch.abs(v_ - v))
+
 
 def MAPE(v, v_):
     """

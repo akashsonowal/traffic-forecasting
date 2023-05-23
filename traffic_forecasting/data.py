@@ -8,12 +8,15 @@ from torch_geometric.data import InMemoryDataset, Data
 
 from .utils import z_score
 
+
 class TrafficDataset(InMemoryDataset):
     """
     Dataset for Graph Neural Networks.
     """
 
-    def __init__(self, config, W, root="../data/root/", transform=None, pre_transform=None):
+    def __init__(
+        self, config, W, root="../data/root/", transform=None, pre_transform=None
+    ):
         self.config = config
         self.W = W
         super().__init__(root, transform, pre_transform)
@@ -23,7 +26,7 @@ class TrafficDataset(InMemoryDataset):
 
     @property
     def raw_file_names(self):
-        return [os.path.join(self.raw_dir, "PeMSD7_V_228.csv")] # velocity data
+        return [os.path.join(self.raw_dir, "PeMSD7_V_228.csv")]  # velocity data
 
     @property
     def processed_file_names(self):
@@ -46,7 +49,7 @@ class TrafficDataset(InMemoryDataset):
         # get the mean and std_dev from a large dataset
         mean = np.mean(data)
         std_dev = np.std(data)
-        data = z_score(data, np.mean(data), np.std(data)) # normalized data
+        data = z_score(data, np.mean(data), np.std(data))  # normalized data
 
         _, n_node = data.shape  # (12672, 228)
         n_window = (
@@ -84,18 +87,20 @@ class TrafficDataset(InMemoryDataset):
                 start = i * self.config["N_DAY_SLOT"] + j
                 end = start + n_window  # n_window is window size
                 full_window = np.swapaxes(
-                    data[start:end, :], 0, 1 # (F, N) switched to (N, F) i.e., [21, 228] -> [228, 21]
+                    data[start:end, :],
+                    0,
+                    1,  # (F, N) switched to (N, F) i.e., [21, 228] -> [228, 21]
                 )  # rows becomes cols and vice versa
                 g.x = torch.FloatTensor(
-                    full_window[:, 0:self.config["N_HIST"]]
+                    full_window[:, 0 : self.config["N_HIST"]]
                 )  # (228, 12)
                 g.y = torch.FloatTensor(
-                    full_window[:, self.config["N_HIST"]::]
+                    full_window[:, self.config["N_HIST"] : :]
                 )  # (228, 9)
                 sequences += [g]
 
         # make the actual dataset
         data, slices = self.collate(sequences)  # concatenate graph data objects
         # slices is a list of number of nodes of each graph. For our case it is [228, 228, ...44 x N_SLOT times]
-        # data is tuple of (x, edge_index, edge_attr) 
+        # data is tuple of (x, edge_index, edge_attr)
         torch.save((data, slices, n_node, mean, std_dev), self.processed_paths[0])

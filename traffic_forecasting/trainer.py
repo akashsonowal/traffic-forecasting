@@ -13,6 +13,7 @@ from utils import un_z_score, RMSE, MAE, MAPE
 # Make a tensorboard writer
 writer = SummaryWriter()
 
+
 @torch.no_grad()
 def eval(model, device, dataloader, type=""):
     """
