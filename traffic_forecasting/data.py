@@ -29,7 +29,7 @@ class TrafficDataset(InMemoryDataset):
 
     @property
     def processed_file_names(self):
-        return ["./data/root/data.pt"]
+        return ["data.pt"]
 
     def download(self):  # velocity dataset
         copyfile(
