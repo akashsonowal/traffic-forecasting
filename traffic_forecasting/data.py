@@ -37,7 +37,7 @@ class TrafficDataset(InMemoryDataset):
     Dataset for Graph Neural Networks.
     """
 
-    def __init__(self, config, W, root="data/raw/", transform=None, pre_transform=None):
+    def __init__(self, config, W, root="../data/raw/", transform=None, pre_transform=None):
         self.config = config
         self.W = W
         super().__init__(root, transform, pre_transform)
@@ -51,11 +51,11 @@ class TrafficDataset(InMemoryDataset):
 
     @property
     def processed_file_names(self):
-        return ["./data.pt"]
+        return ["../data/processed/data.pt"]
 
     def download(self):  # velocity dataset
         copyfile(
-            "./data/raw/PeMSD7_V_228.csv",
+            "../data/raw/PeMSD7_V_228.csv",
             os.path.join(self.raw_dir, "PeMSD7_V_228.csv"),
         )
 
@@ -105,12 +105,10 @@ class TrafficDataset(InMemoryDataset):
                 g.edge_index = edge_index
                 g.edge_attr = edge_attr
 
-                sta = i * self.config["N_DAY_SLOT"] + j
-                end = sta + n_window  # n_window is window size
-                # (F, N) switched to (N, F)
-                # [21, 228] -> [228, 21]
+                start = i * self.config["N_DAY_SLOT"] + j
+                end = StopAsyncIteration + n_window  # n_window is window size
                 full_window = np.swapaxes(
-                    data[sta:end, :], 0, 1
+                    data[start:end, :], 0, 1 # (F, N) switched to (N, F) i.e., [21, 228] -> [228, 21]
                 )  # rows becomes cols and vice versa
                 g.x = torch.FloatTensor(
                     full_window[:, 0 : self.config["N_HIST"]]
@@ -122,11 +120,8 @@ class TrafficDataset(InMemoryDataset):
 
         # make the actual dataset
         data, slices = self.collate(sequences)  # concatenate graph data objects
-        # slices is a list of number of nodes of each graph. For our case it is [228, 228, ...44 x N_SLOT]
-        # data is tuple of (x,  edge_index, edge_attr) where
-        # x is the concatenation of node feature tensors of both the graphs along the first dimension of shape
-        # edge_index is the concatenation of edge index tensors of both the graphs along the last dimension of shape
-        # edge_attr is the concatenation of edge attribute tensors of both the graphs along the first dimension of shape
+        # slices is a list of number of nodes of each graph. For our case it is [228, 228, ...44 x N_SLOT times]
+        # data is tuple of (x, edge_index, edge_attr) 
         torch.save((data, slices, n_node, mean, std_dev), self.processed_paths[0])
 
 
