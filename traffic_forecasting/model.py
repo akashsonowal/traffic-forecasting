@@ -50,7 +50,7 @@ class ST_GAT(torch.nn.Module):
         )
         for name, param in self.lstm2.named_parameters():
             if "bias" in name:
-                torch.nn.init_constant_(param, 0.0)
+                torch.nn.init.constant_(param, 0.0)
             elif "weight" in name:
                 torch.nn.init.kaiming_uniform_(param)
 
