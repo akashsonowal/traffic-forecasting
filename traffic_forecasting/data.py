@@ -13,7 +13,7 @@ class TrafficDataset(InMemoryDataset):
     Dataset for Graph Neural Networks.
     """
 
-    def __init__(self, config, W, root="../data/raw/", transform=None, pre_transform=None):
+    def __init__(self, config, W, root="../data/root/", transform=None, pre_transform=None):
         self.config = config
         self.W = W
         super().__init__(root, transform, pre_transform)
@@ -23,11 +23,11 @@ class TrafficDataset(InMemoryDataset):
 
     @property
     def raw_file_names(self):
-        return [os.path.join(self.raw_dir, "PeMSD7_V_228.csv")]
+        return [os.path.join(self.raw_dir, "PeMSD7_V_228.csv")] # velocity data
 
     @property
     def processed_file_names(self):
-        return ["../data/processed/data.pt"]
+        return ["../data/root/data.pt"]
 
     def download(self):  # velocity dataset
         copyfile(
@@ -70,7 +70,7 @@ class TrafficDataset(InMemoryDataset):
         edge_attr = edge_attr.resize_(num_edges, 1)
 
         sequences = []
-        # T x F x N
+        # T x F x N  => Time x Feature x Nodes
         for i in range(self.config["N_DAYS"]):  # 44 days
             for j in range(self.config["N_SLOT"]):  # No. of windows in a day
                 # for each time point construct a different graph with data object
@@ -82,15 +82,15 @@ class TrafficDataset(InMemoryDataset):
                 g.edge_attr = edge_attr
 
                 start = i * self.config["N_DAY_SLOT"] + j
-                end = StopAsyncIteration + n_window  # n_window is window size
+                end = start + n_window  # n_window is window size
                 full_window = np.swapaxes(
                     data[start:end, :], 0, 1 # (F, N) switched to (N, F) i.e., [21, 228] -> [228, 21]
                 )  # rows becomes cols and vice versa
                 g.x = torch.FloatTensor(
-                    full_window[:, 0 : self.config["N_HIST"]]
+                    full_window[:, 0:self.config["N_HIST"]]
                 )  # (228, 12)
                 g.y = torch.FloatTensor(
-                    full_window[:, self.config["N_HIST"] : :]
+                    full_window[:, self.config["N_HIST"]::]
                 )  # (228, 9)
                 sequences += [g]
 
