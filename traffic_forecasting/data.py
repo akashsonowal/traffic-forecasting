@@ -6,7 +6,6 @@ from shutil import copyfile
 import torch
 from torch_geometric.data import InMemoryDataset, Data
 
-from .utils import z_score
 
 
 class TrafficDataset(InMemoryDataset):
@@ -49,7 +48,7 @@ class TrafficDataset(InMemoryDataset):
         # get the mean and std_dev from a large dataset
         mean = np.mean(data)
         std_dev = np.std(data)
-        data = z_score(data, np.mean(data), np.std(data))  # normalized data
+        data = (data - np.mean(data)) / np.std(data)  # normalized data
 
         _, n_node = data.shape  # (12672, 228)
         n_window = (
