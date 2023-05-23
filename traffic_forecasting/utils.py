@@ -99,22 +99,6 @@ def MAPE(v, v_):
     return torch.mean(torch.abs(v_ - v) / (v + 1e-15) * 100)
 
 
-def load_from_checkpoint(checkpoint_path, config):
-    """
-    Load a model from the checkpoint
-    :param checkpoint_path Path to checkpoint
-    :param config Configuration to load model with
-    """
-    model = ST_GAT(
-        in_channels=config["N_HIST"],
-        out_channels=config["N_PRED"],
-        n_nodes=config["N_NODE"],
-    )
-    checkpoint = torch.load(checkpoint_path, map_location=torch.device("cpu"))
-    model.load_state_dict(checkpoint["model_state_dict"])
-    return model
-
-
 def plot_predictions(y_pred, y_truth, node, config):
     s = y_truth.shape  #
     print("************* s shape", s)
