@@ -16,7 +16,7 @@ In a single day, we forecast at multiple time stamps (N_SLOTS) and at each time 
   <img width="460" height="300" src="./assets/traffic_on_node0_day0.png" alt="traffic_forecast">
 </p>
 
-The plot above shows the node 0 forecast for the 1st prediction in a single window for all time stamps in a single day.
+The plot above shows the node 0 forecast for the 1st prediction in a single window for all time stamps in the first day of test dataset.
 
 ## Citation
 ```
