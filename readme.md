@@ -5,7 +5,7 @@
 git clone https://github.com/akashsonowal/traffic-forecasting.git
 virtualenv --python=python3.8 myenv
 source myenv/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 ```
 ## Usage
 ```
