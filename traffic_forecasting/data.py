@@ -99,6 +99,7 @@ class TrafficDataset(InMemoryDataset):
 
         # make the actual dataset
         data, slices = self.collate(sequences)  # concatenate graph data objects
-        # slices is a list of number of nodes of each graph. For our case it is [228, 228, ...44 x N_SLOT times]
+        # slices is a list of number of nodes of each graph. For our case it is [g, g, ...(44 x N_SLOT = 11792) times]
+        # for 44 days it is 11792; for 34 days it is 
         # data is tuple of (x, edge_index, edge_attr)
         torch.save((data, slices, n_node, mean, std_dev), self.processed_paths[0])
