@@ -1,6 +1,6 @@
 # Traffic Forecasting
 
-## Experiment in Colab Free Teir
+## Experiment in Colab Free Tier
 ```
 git clone 
 ```
