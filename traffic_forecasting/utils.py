@@ -46,17 +46,6 @@ def get_splits(dataset: TrafficDataset, n_slot, splits):
 
     return train, val, test
 
-
-def un_z_score(x_normed, mean, std):
-    """
-    Undo the z-score calculation
-    :param x_normed torch array, input_array to be un-normalized
-    :param mean: float, the value of mean
-    :param std: float, the value of standard deviation
-    """
-    return x_normed * std + mean
-
-
 def RMSE(v, v_):
     """
     Mean squared error.
