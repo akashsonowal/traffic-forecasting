@@ -6,7 +6,7 @@ import torch
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-from .utils import un_z_score, RMSE, MAE, MAPE, plot_predictions
+from .utils import RMSE, MAE, MAPE, plot_predictions
 
 # Make a tensorboard writer
 writer = SummaryWriter()
@@ -29,14 +29,12 @@ def eval(model, device, dataloader, type=""):
         else:
             with torch.no_grad():
                 pred = model(batch, device)
-            truth = batch.y.view(pred.shape)
-            print("truth shape********", truth.shape)
+            truth = batch.y.view(pred.shape) # (11400, 9)
             if i == 0:
                 y_pred = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
                 y_truth = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
-            truth = un_z_score(
-                truth, dataloader.dataset.mean, dataloader.dataset.std_dev
-            )
+            print("y pred shape", y_pred.shape)
+            truth = truth * dataloader.dataset.std_dev + dataloader.dataset.mean
             pred = un_z_score(pred, dataloader.dataset.mean, dataloader.dataset.std_dev)
             y_pred[i, : pred.shape[0], :] = pred
             y_truth[i, : truth.shape[0], :] = truth
