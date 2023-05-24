@@ -24,7 +24,7 @@ def main():
         "N_PRED": 9,
         "N_HIST": 12,
         "DROPOUT": 0.2,
-        "N_DAY_SLOT": 288,  # (24 * 60)/5 number of possible 5 mins measurements per day
+        "N_DAY_SLOT": 288,  # (24 * 60) / 5 number of possible 5 mins measurements per day
         "N_DAYS": 44,  # number of days worth of data in the dataset
         "USE_GAT_WEIGHTS": True,  # If True, use GAT weight matrix, else GCN weight matrix
         "N_NODE": 228,
