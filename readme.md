@@ -8,7 +8,7 @@ $ pip install -r requirements.txt
 ```
 ## Usage
 ```
-python experiment.py
+$ python experiment.py
 ```
 
 ## Citation
