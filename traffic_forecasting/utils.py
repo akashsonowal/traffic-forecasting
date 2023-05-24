@@ -137,5 +137,10 @@ def plot_predictions(y_pred, y_truth, node, config):
     plt.ylabel("Speed prediction")
     plt.title("Predictions of traffic over time")
     plt.legend()
-    plt.savefig(f"../assets/traffic_on_node{node}_day0.png")
+    
+    file_path = f"./assets/traffic_on_node{node}_day0.png"
+    assets_dir = os.path.dirname(file_path)
+    if not os.path.exists(assets_dir):
+        os.makedirs(assets_dir)
+    plt.savefig(file_path)
     plt.show()
