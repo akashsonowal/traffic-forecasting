@@ -31,11 +31,13 @@ def eval(model, device, dataloader, type=""):
                 pred = model(batch, device)
             truth = batch.y.view(pred.shape) # (11400, 9)
             if i == 0:
+                # (183, 11400, 9) for train_loader, 183 = 9112 / 50
+                # (27, 11400, 9) for val_loader and test_loader, 27 = 1340 / 50
                 y_pred = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
                 y_truth = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
             print("y pred shape", y_pred.shape)
             truth = truth * dataloader.dataset.std_dev + dataloader.dataset.mean
-            pred = un_z_score(pred, dataloader.dataset.mean, dataloader.dataset.std_dev)
+            pred = pred * dataloader.dataset.std_dev + dataloader.dataset.mean
             y_pred[i, : pred.shape[0], :] = pred
             y_truth[i, : truth.shape[0], :] = truth
             rmse += RMSE(truth, pred)
