@@ -64,7 +64,7 @@ def train_one_epoch(model, device, dataloader, optimizer, loss_fn, epoch):
     model.train()
     for _, batch in enumerate(tqdm(dataloader, desc=f"Epochs {epoch}")):
         batch.to(device)
-        y_pred = torch.squeeze(model(batch, device))
+        y_pred = torch.squeeze(model(batch, device)) # (11400, 9)
         loss = loss_fn()(y_pred.float(), torch.squeeze(batch.y).float())
         writer.add_scalar("Loss/train", loss, epoch)
         optimizer.zero_grad()
