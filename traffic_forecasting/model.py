@@ -72,6 +72,7 @@ class ST_GAT(torch.nn.Module):
 
         # gat layer: output of gat: [11400, 12] where 50 x 228 = 11400
         x = self.gat(x, edge_index)
+        print("****************gat output", x.shape)
         # apply dropout
         x = F.dropout(x, self.dropout, training=self.training)
 
