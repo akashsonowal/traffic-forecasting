@@ -73,7 +73,7 @@ class TrafficDataset(InMemoryDataset):
         sequences = []
         # T x F x N  => Time x Feature x Nodes
         for i in range(self.config["N_DAYS"]):  # 44 days
-            for j in range(self.config["N_SLOT"]):  # No. of windows in a day
+            for j in range(self.config["N_SLOT"]):  # No. of windows in a day i.e., 268
                 # for each time point construct a different graph with data object
                 # Docs here: https://pytorch-geometric.readthedocs.io/en/latest/modules/data.html#torch_geometric.data.Data
                 g = Data()
