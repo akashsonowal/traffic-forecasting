@@ -1,6 +1,6 @@
 # Traffic Forecasting
 
-## Experiment in Colab (Recommended) - Without Accelerator Runtime
+## Experiment
 ```
 git clone https://github.com/akashsonowal/traffic-forecasting.git
 ```
