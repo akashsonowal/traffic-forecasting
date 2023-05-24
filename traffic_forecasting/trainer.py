@@ -14,13 +14,6 @@ writer = SummaryWriter()
 
 @torch.no_grad()
 def eval(model, device, dataloader, type=""):
-    """
-    Evaluation function to evaluate model on data
-    :param model Model to evaluate
-    :param device Device to evaluate on
-    :param dataloader Dataloader
-    :param type Name of evaluation type, e.g. Train/Val/Test
-    """
     model.eval()
     model.to(device)
 
@@ -29,7 +22,6 @@ def eval(model, device, dataloader, type=""):
     mape = 0
     n = 0
 
-    # Evaluate model on all the data
     for i, batch in enumerate(dataloader):
         batch = batch.to(device)
         if batch.x.shape[0] == 1:
@@ -38,6 +30,7 @@ def eval(model, device, dataloader, type=""):
             with torch.no_grad():
                 pred = model(batch, device)
             truth = batch.y.view(pred.shape)
+            print("truth shape********", truth.shape)
             if i == 0:
                 y_pred = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
                 y_truth = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
