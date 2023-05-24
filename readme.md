@@ -3,7 +3,7 @@
 ## Setup
 ```
 $ git clone https://github.com/akashsonowal/traffic-forecasting.git
-$ virtualenv --python=python3.8 myenv && source myenv/bin/activate # skip this line if using colab
+$ virtualenv --python=python3.8 myenv && source myenv/bin/activate # skip if using colab
 $ pip install -r requirements.txt
 ```
 ## Usage
