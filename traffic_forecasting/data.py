@@ -7,7 +7,6 @@ import torch
 from torch_geometric.data import InMemoryDataset, Data
 
 
-
 class TrafficDataset(InMemoryDataset):
     """
     Dataset for Graph Neural Networks.

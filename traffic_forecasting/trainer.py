@@ -44,9 +44,7 @@ def eval(model, device, dataloader, type=""):
             truth = un_z_score(
                 truth, dataloader.dataset.mean, dataloader.dataset.std_dev
             )
-            pred = un_z_score(
-                pred, dataloader.dataset.mean, dataloader.dataset.std_dev
-            )
+            pred = un_z_score(pred, dataloader.dataset.mean, dataloader.dataset.std_dev)
             y_pred[i, : pred.shape[0], :] = pred
             y_truth[i, : truth.shape[0], :] = truth
             rmse += RMSE(truth, pred)
@@ -100,7 +98,9 @@ def model_train(model, train_dataloader, val_dataloader, config, device):
 
     # For every epoch train the model on training dataset. Evaluate the model on evaluation dataset
     for epoch in tqdm(range(config["EPOCHS"])):
-        loss = train_one_epoch(model, device, train_dataloader, optimizer, loss_fn, epoch)
+        loss = train_one_epoch(
+            model, device, train_dataloader, optimizer, loss_fn, epoch
+        )
         print(f"Loss: {loss:.3f}")
         if epoch % 5 == 0:
             train_mae, train_rmse, train_mape, _, _ = eval(

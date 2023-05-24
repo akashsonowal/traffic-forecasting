@@ -5,7 +5,11 @@ import torch
 from torch_geometric.loader import DataLoader
 
 from traffic_forecasting.data import TrafficDataset
-from traffic_forecasting.utils import distance_to_weight, get_splits, load_from_checkpoint
+from traffic_forecasting.utils import (
+    distance_to_weight,
+    get_splits,
+    load_from_checkpoint,
+)
 from traffic_forecasting.model import ST_GAT
 from traffic_forecasting.trainer import model_train, model_test
 
