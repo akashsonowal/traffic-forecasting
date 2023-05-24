@@ -1,8 +1,8 @@
 # Traffic Forecasting
 
-## Experiment in Colab Free Tier
+## Experiment in Colab Free Tier (Recommended) - Without Accelerator Runtime
 ```
-git clone 
+git clone https://github.com/akashsonowal/traffic-forecasting.git
 ```
 
 ## Citation
