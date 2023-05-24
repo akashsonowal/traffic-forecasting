@@ -109,11 +109,11 @@ def plot_predictions(y_pred, y_truth, node, config):
         s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1]
     )  # (, batch_size, nodes, days) i.e., (27, 50, 228, 9)
     # just get the first prediction out for the nth node
-    y_truth = y_truth[:, :, node, 0] # (27, 50)
+    y_truth = y_truth[:, :, node, 0]  # (27, 50)
     # Flatten to get the predictions for entire test dataset
-    y_truth = torch.flatten(y_truth) # (1350)
-    day0_truth = y_truth[: config["N_SLOT"]] # (268)
-    
+    y_truth = torch.flatten(y_truth)  # (1350)
+    day0_truth = y_truth[: config["N_SLOT"]]  # (268)
+
     # Calculate the predicted
     s = y_pred.shape
     y_pred = y_pred.reshape(s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1])
@@ -124,15 +124,15 @@ def plot_predictions(y_pred, y_truth, node, config):
     # Just grab the first day
     day0_pred = y_pred[: config["N_SLOT"]]
 
-    t = [t for t in range(0, config["N_SLOT"])] # 268
-    
+    t = [t for t in range(0, config["N_SLOT"])]  # 268
+
     plt.plot(t, day0_pred, label="ST-GAT")
     plt.plot(t, day0_truth, label="truth")
     plt.xlabel("Time (minutes)")
     plt.ylabel("Speed prediction")
     plt.title("Predictions of traffic over time")
     plt.legend()
-    
+
     file_path = f"./assets/traffic_on_node{node}_day0.png"
     assets_dir = os.path.dirname(file_path)
     if not os.path.exists(assets_dir):
