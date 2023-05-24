@@ -70,9 +70,8 @@ class ST_GAT(torch.nn.Module):
         else:
             x = torch.cuda.FloatTensor(x)
 
-        # gat layer: output of gat: [11400, 12] where 50 x 228 = 11400 where batch size is 50
-        print("**********x before gat", x.shape)
-        x = self.gat(x, edge_index)
+        # gat layer: output of gat: (11400, 12) where 50 x 228 = 11400 where batch size is 50
+        x = self.gat(x, edge_index) # 11400, 12) -> (11400, 12)
         # apply dropout
         x = F.dropout(x, self.dropout, training=self.training)
 
@@ -84,22 +83,16 @@ class ST_GAT(torch.nn.Module):
 
         # for lstm: x should be (seq_length, batch_size, n_nodes)
         # sequence_length: 12, batch_size: 50, n_nodes: 228
-        x = torch.movedim(x, 2, 0)  # (12, 50, 228)
-        # [12, 50, 228] -> [12, 50, 32]
-        x, _ = self.lstm1(x)
-        # [12, 50, 32] -> [12, 50, 128]
-        x, _ = self.lstm2(x)
+        x = torch.movedim(x, 2, 0)  # (12, 50, 228) # time series sequence
+        x, _ = self.lstm1(x) # (12, 50, 228) -> (12, 50, 32)
+        x, _ = self.lstm2(x) # (12, 50, 32) -> (12, 50, 128)
 
-        # Output contains h_t for each time_step, only the last one has all inputs accounted for
-        # [12, 50, 128] -> [50, 128]
-        x = torch.squeeze(x[-1, :, :])
-        # [50, 128] -> [50, 228*9]
-        x = self.linear(x)
+        # Output contains h_t for each time_step, only the last one has all inputs accounted for.
+        x = torch.squeeze(x[-1, :, :]) # (12, 50, 128) -> (50, 128)
+        x = self.linear(x) # (50, 128) -> (50, 228*9)
 
         # Now reshape into final output
         s = x.shape
-        # [50, 228*9] -> [50, 228, 9]
-        x = torch.reshape(x, (s[0], self.n_nodes, self.n_pred))
-        # [50, 228, 9] -> [11400, 9]
-        x = torch.reshape(x, (s[0] * self.n_nodes, self.n_pred))
+        x = torch.reshape(x, (s[0], self.n_nodes, self.n_pred)) # (50, 228*9) -> (50, 228, 9)
+        x = torch.reshape(x, (s[0] * self.n_nodes, self.n_pred)) # (50, 228, 9) -> (11400, 9)
         return x
