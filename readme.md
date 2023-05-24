@@ -10,6 +10,9 @@ $ pip install -r requirements.txt
 ```
 $ python experiment.py
 ```
+<div style="text-align: center;">
+  <img src="./assets/traffic_on_node0_day0.png" alt="Forecasr">
+</div>
 
 ## Citation
 ```
