@@ -129,7 +129,7 @@ def plot_predictions(y_pred, y_truth, node, config):
     print("day0_pred", day0_pred.shape)
 
     t = [t for t in range(0, config["N_SLOT"], 5)]
-    print("t", t)
+    print("t", len(t))
     
     plt.plot(t, day0_pred, label="ST-GAT")
     plt.plot(t, day0_truth, label="truth")
