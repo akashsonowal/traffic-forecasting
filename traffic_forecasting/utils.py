@@ -93,10 +93,10 @@ def load_from_checkpoint(checkpoint_path, config):
 
 
 def plot_predictions(y_pred, y_truth, node, config):
-    s = y_truth.shape  # (27, 11400, 9)
+    s = y_truth.shape  # (27, 11400, 9) for test_data
     y_truth = y_truth.reshape(
-        s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1]
-    )  # (, batch_size, nodes, days) i.e., (27, 50, 228, 9)
+        s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1] # (27, 50, 228, 9)
+    )  
     # just get the first prediction out for the nth node
     y_truth = y_truth[:, :, node, 0]  # (27, 50)
     # Flatten to get the predictions for entire test dataset
