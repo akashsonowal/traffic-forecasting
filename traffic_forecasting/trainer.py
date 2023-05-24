@@ -42,10 +42,10 @@ def eval(model, device, dataloader, type=""):
                 y_pred = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
                 y_truth = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
             truth = un_z_score(
-                truth, dataloader.dataset.mean(), dataloader.dataset.std_dev()
+                truth, dataloader.dataset.mean, dataloader.dataset.std_dev
             )
             pred = un_z_score(
-                pred, dataloader.dataset.mean(), dataloader.dataset.std_dev()
+                pred, dataloader.dataset.mean, dataloader.dataset.std_dev
             )
             y_pred[i, : pred.shape[0], :] = pred
             y_truth[i, : truth.shape[0], :] = truth
