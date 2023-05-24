@@ -70,9 +70,9 @@ class ST_GAT(torch.nn.Module):
         else:
             x = torch.cuda.FloatTensor(x)
 
-        # gat layer: output of gat: [11400, 12] where 50 x 228 = 11400
+        # gat layer: output of gat: [11400, 12] where 50 x 228 = 11400 where batch size is 50
+        print("**********x before gat", x.shape)
         x = self.gat(x, edge_index)
-        print("****************gat output", x.shape)
         # apply dropout
         x = F.dropout(x, self.dropout, training=self.training)
 
