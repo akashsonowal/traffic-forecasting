@@ -24,7 +24,9 @@ class TrafficDataset(InMemoryDataset):
 
     @property
     def raw_file_names(self):
-        return [os.path.join(self.raw_dir, "PeMSD7_V_228.csv")]  # velocity data (12672, 228)
+        return [
+            os.path.join(self.raw_dir, "PeMSD7_V_228.csv")
+        ]  # velocity data (12672, 228)
 
     @property
     def processed_file_names(self):

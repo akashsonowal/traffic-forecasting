@@ -29,13 +29,13 @@ def eval(model, device, dataloader, type=""):
         else:
             with torch.no_grad():
                 pred = model(batch, device)
-            truth = batch.y.view(pred.shape) # (11400, 9)
+            truth = batch.y.view(pred.shape)  # (11400, 9)
             if i == 0:
                 y_pred = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
                 y_truth = torch.zeros(len(dataloader), pred.shape[0], pred.shape[1])
                 # (183, 11400, 9) for train_loader, 183 = 9112 / 50
                 # (27, 11400, 9) for val_loader and test_loader, 27 = 1340 / 50
-                
+
             truth = truth * dataloader.dataset.std_dev + dataloader.dataset.mean
             pred = pred * dataloader.dataset.std_dev + dataloader.dataset.mean
             y_pred[i, : pred.shape[0], :] = pred
@@ -64,7 +64,7 @@ def train_one_epoch(model, device, dataloader, optimizer, loss_fn, epoch):
     model.train()
     for _, batch in enumerate(tqdm(dataloader, desc=f"Epochs {epoch}")):
         batch.to(device)
-        y_pred = torch.squeeze(model(batch, device)) # (11400, 9)
+        y_pred = torch.squeeze(model(batch, device))  # (11400, 9)
         loss = loss_fn()(y_pred.float(), torch.squeeze(batch.y).float())
         writer.add_scalar("Loss/train", loss, epoch)
         optimizer.zero_grad()
