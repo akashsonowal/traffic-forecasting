@@ -108,12 +108,15 @@ def plot_predictions(y_pred, y_truth, node, config):
     y_truth = y_truth.reshape(
         s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1]
     )  # (, batch_size, nodes, days)
+    print("#######y_truth_shape", y_truth.shape)
     # just get the first prediction out for the nth node
     y_truth = y_truth[:, :, node, 0]
+    print("#######y_truth_shape single", y_truth.shape)
     # Flatten to get the predictions for entire test dataset
     y_truth = torch.flatten(y_truth)
+    print("#######y_truth_shape flatten", y_truth.shape)
     day0_truth = y_truth[: config["N_SLOT"]]
-
+    
     # Calculate the predicted
     s = y_pred.shape
     y_pred = y_pred.reshape(s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1])
@@ -124,7 +127,7 @@ def plot_predictions(y_pred, y_truth, node, config):
     # Just grab the first day
     day0_pred = y_pred[: config["N_SLOT"]]
 
-    t = [t for t in range(0, config["N_SLOT"], 5, 5)]
+    t = [t for t in range(0, config["N_SLOT"], 5)]
     plt.plot(t, day0_pred, label="ST-GAT")
     plt.plot(t, day0_truth, label="truth")
     plt.xlabel("Time (minutes)")
