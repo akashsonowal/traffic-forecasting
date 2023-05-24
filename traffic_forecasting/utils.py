@@ -104,19 +104,15 @@ def load_from_checkpoint(checkpoint_path, config):
 
 
 def plot_predictions(y_pred, y_truth, node, config):
-    s = y_truth.shape  #
-    print("************* s shape", s)
+    s = y_truth.shape  # (27, 11400, 9)
     y_truth = y_truth.reshape(
         s[0], config["BATCH_SIZE"], config["N_NODE"], s[-1]
-    )  # (, batch_size, nodes, days)
-    print("#######y_truth_shape", y_truth.shape)
+    )  # (, batch_size, nodes, days) i.e., (27, 50, 228, 9)
     # just get the first prediction out for the nth node
-    y_truth = y_truth[:, :, node, 0]
-    print("#######y_truth_shape single", y_truth.shape)
+    y_truth = y_truth[:, :, node, 0] # (27, 50)
     # Flatten to get the predictions for entire test dataset
-    y_truth = torch.flatten(y_truth)
-    print("#######y_truth_shape flatten", y_truth.shape)
-    day0_truth = y_truth[: config["N_SLOT"]]
+    y_truth = torch.flatten(y_truth) # (1350)
+    day0_truth = y_truth[: config["N_SLOT"]] # (268)
     
     # Calculate the predicted
     s = y_pred.shape
@@ -127,10 +123,8 @@ def plot_predictions(y_pred, y_truth, node, config):
     y_pred = torch.flatten(y_pred)
     # Just grab the first day
     day0_pred = y_pred[: config["N_SLOT"]]
-    print("day0_pred", day0_pred.shape)
 
-    t = [t for t in range(0, config["N_SLOT"])]
-    print("t", len(t))
+    t = [t for t in range(0, config["N_SLOT"])] # 268
     
     plt.plot(t, day0_pred, label="ST-GAT")
     plt.plot(t, day0_truth, label="truth")
