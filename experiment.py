@@ -17,7 +17,7 @@ from traffic_forecasting.trainer import model_train, model_test
 def main():
     config = {
         "BATCH_SIZE": 50,
-        "EPOCHS": 2, #200
+        "EPOCHS": 1, #200
         "WEIGHT_DECAY": 5e-5,
         "INITIAL_LR": 3e-4,
         "CHECKPOINT_DIR": "./runs",
