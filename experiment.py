@@ -31,7 +31,7 @@ def main():
     }
     config["N_SLOT"] = (
         config["N_DAY_SLOT"] - (config["N_PRED"] + config["N_HIST"]) + 1
-    )  # number of possible windows in a day
+    )  # number of possible windows in a day i.e., 268
     distances = pd.read_csv(
         "./data/raw/PeMSD7_W_228.csv", header=None
     ).values  # (228, 228)
