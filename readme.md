@@ -1,8 +1,15 @@
 # Traffic Forecasting
 
-## Experiment
+## Setup
 ```
 git clone https://github.com/akashsonowal/traffic-forecasting.git
+virtualenv --python=python3.8 myenv
+source myenv/bin/activate
+pip install -r requirements
+```
+## Usage
+```
+python experiment.py
 ```
 
 ## Citation
