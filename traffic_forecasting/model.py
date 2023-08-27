@@ -71,7 +71,7 @@ class ST_GAT(torch.nn.Module):
             x = torch.cuda.FloatTensor(x)
 
         # gat layer: output of gat: (11400, 12) where 50 x 228 = 11400 where batch size is 50
-        x = self.gat(x, edge_index)  # 11400, 12) -> (11400, 12)
+        x = self.gat(x, edge_index)  # (11400, 12) -> (11400, 12)
         # apply dropout
         x = F.dropout(x, self.dropout, training=self.training)
 
